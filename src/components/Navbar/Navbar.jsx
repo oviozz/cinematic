@@ -4,6 +4,8 @@ import "./Navbar.css"
 import {movieGenres} from "@/lib/queryType";
 import LanguageDropdown from "@/components/Navbar/home-tools/LanguageDropdown";
 import Link from "next/link";
+import SearchInput from "@/components/Navbar/home-tools/SearchInput";
+import {Suspense} from "react";
 
 //h-14 lg:h-16
 
@@ -21,16 +23,13 @@ export default function Navbar(){
 
                     <div className={"flex gap-3 sm:w-fit w-full"}>
 
-                        <div className="relative flex-1">
-                            <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" />
-                            <Input
-                                className="h-full w-full rounded-md bg-gray-900 pl-10 text-sm focus:outline-none"
-                                placeholder="Search movies..."
-                                type="search"
-                            />
-                        </div>
+                        <Suspense>
+                            <SearchInput />
+                        </Suspense>
 
-                        <LanguageDropdown />
+                        <Suspense>
+                            <LanguageDropdown />
+                        </Suspense>
 
                     </div>
                 </div>

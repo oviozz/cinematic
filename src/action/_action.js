@@ -39,3 +39,11 @@ export const fetchDetail = async (id, query, lang) => {
 
     return { detail: detailData, similar: similarData, actor: actorData, watchProvider: watchData };
 };
+
+
+export const fetchSearch = async (search, lang) => {
+
+    const response = await fetch(`https://api.themoviedb.org/3/search/multi?query=${search}&language=${lang}&api_key=0b243a8843cc55c9e1ba6cdeae3cf6fb`);
+    return await response.json();
+
+}

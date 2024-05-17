@@ -4,13 +4,14 @@ import {notFound} from "next/navigation";
 import Link from "next/link";
 import {capitalizeFirstLetter} from "@/lib/utils";
 import "/src/app/globals.css"
+import ImageFallback from "@/components/ImageFallback";
 
 const MovieDetail = async ({searchParams, params}) => {
+
     const { lang } = searchParams;
     const {id, type} = params;
     const {detail : movie, similar: {results: similarMovie}, actor: {cast}, watchProvider: {results: watchData}} = await fetchDetail(id, type.trim(), lang || "en");
 
-    console.log(watchData)
     if (!movie && !movie?.success){
         notFound();
     }
@@ -20,14 +21,16 @@ const MovieDetail = async ({searchParams, params}) => {
             <div className="sm:flex sm:flex-col lg:flex-row flex-col text-white rounded-lg shadow-lg overflow-hidden">
 
                 <div className={"sm:w-1/2 w-full space-y-5"}>
-                    <img src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`} alt={movie.title || movie.original_title} className="w-full h-96 object-cover"/>
+                    <ImageFallback width={500} height={500} src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`} alt={movie.title || movie.original_title} className="w-full h-96 object-cover"/>
                     <div className={""}>
                         <h2 className="text-2xl font-bold mb-4">Actors</h2>
 
                         <div className="flex overflow-x-scroll space-x-8 hide-scrollbar">
                             {cast.map(actor => (
                                 <div key={actor.id} className="flex-none w-32 text-center">
-                                    <img
+                                    <ImageFallback
+                                        width={250}
+                                        height={250}
                                         src={`https://image.tmdb.org/t/p/w200${actor.profile_path}`}
                                         alt={actor.name}
                                         className="w-full h-auto rounded-md object-cover"
@@ -66,7 +69,7 @@ const MovieDetail = async ({searchParams, params}) => {
                             {movie?.production_companies?.map((company) => (
                                 <div key={company.id} className="flex items-center mr-4 mb-4">
                                     {company.logo_path && (
-                                        <img src={`https://image.tmdb.org/t/p/w200${company.logo_path}`} alt={company.name} className="h-10 mr-2" />
+                                        <ImageFallback width={100} height={100} src={`https://image.tmdb.org/t/p/w200${company.logo_path}`} alt={company.name} className="h-10 mr-2" />
                                     )}
                                     <span>{company.name}</span>
                                 </div>
@@ -92,8 +95,10 @@ const MovieDetail = async ({searchParams, params}) => {
                         <div className="grid grid-cols-2 gap-7 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
                             {
                                 similarMovie.map((movie) => (
-                                    <Link href="#" key={movie.id} className="relative group">
-                                        <img
+                                    <Link href={{ pathname: `/detail/${type}/${movie.id}`, query: { ...searchParams } }} key={movie.id} className="relative group">
+                                        <ImageFallback
+                                            width={300}
+                                            height={300}
                                             alt="Movie poster"
                                             className="h-auto w-full rounded-md object-cover group-hover:opacity-50 transition-opacity"
                                             src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}

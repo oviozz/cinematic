@@ -6,6 +6,7 @@ import { useInView } from "react-intersection-observer";
 import { useEffect, useState } from "react";
 import { fetchPopular } from "@/action/_action";
 import Link from "next/link";
+import ImageFallback from "@/components/ImageFallback";
 
 export default function LoadMore({initialData, query, lang, searchParams }) {
 
@@ -22,7 +23,6 @@ export default function LoadMore({initialData, query, lang, searchParams }) {
         const fetchData = async () => {
             try {
                 const res = await fetchPopular(query, lang, currentPage);
-                console.log(res.results)
                 setData((prevData) => [...prevData, ...res.results]);
                 setCurrentPage((prevPage) => prevPage + 1);
             } catch (error) {
@@ -40,7 +40,9 @@ export default function LoadMore({initialData, query, lang, searchParams }) {
             <div className="grid grid-cols-2 gap-7 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
                 {data?.map((movie) => (
                     <Link href={{ pathname: `/detail/${query[0]}/${movie.id}`, query: { ...searchParams } }} key={movie.id} className="relative group">
-                        <img
+                        <ImageFallback
+                            width={300}
+                            height={300}
                             alt="Movie poster"
                             className="h-auto w-full rounded-md object-cover group-hover:opacity-50 transition-opacity"
                             src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
