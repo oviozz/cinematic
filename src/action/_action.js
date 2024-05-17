@@ -1,29 +1,27 @@
 
-"use server"
+"use server";
 
-import {extractMovie, extractTV} from "@/lib/queryType";
+import { extractMovie, extractTV } from "@/lib/queryType";
 
 export const fetchPopular = async (query, lang, page) => {
 
-    const extractType = query[0] === "tv" ? extractTV(query[1]) : extractMovie(query[1])
+    const extractType = query[0] === "tv" ? extractTV(query[1]) : extractMovie(query[1]);
 
-    const response = await fetch(`https://api.themoviedb.org/3/${query[0]}/${extractType}?language=${lang}&page=${page}&api_key=0b243a8843cc55c9e1ba6cdeae3cf6fb`);
+    const response = await fetch(`https://api.themoviedb.org/3/${query[0]}/${extractType}?language=${lang}&page=${page}&api_key=${process.env.API_KEY}`);
     return await response.json();
 
-}
-
+};
 
 export const fetchDetail = async (id, query, lang) => {
 
     const apiRouteType = query[0] === "tv" ? "tv" : "movie";
     const creditType = query[0] === "tv" ? "aggregate_credits" : "credits";
 
-    const apiKey = '0b243a8843cc55c9e1ba6cdeae3cf6fb';
+    const apiKey = process.env.API_KEY;
     const detailUrl = `https://api.themoviedb.org/3/${apiRouteType}/${id}?language=${lang}&api_key=${apiKey}`;
     const similarUrl = `https://api.themoviedb.org/3/${apiRouteType}/${id}/similar?language=${lang}&api_key=${apiKey}`;
     const actorURL = `https://api.themoviedb.org/3/${apiRouteType}/${id}/${creditType}?language=${lang}&api_key=${apiKey}`;
     const watchProviders = `https://api.themoviedb.org/3/${apiRouteType}/${id}/watch/providers?language=${lang}&api_key=${apiKey}`;
-
 
     const [detailResponse, similarResponse, actorResponse, watchResponse] = await Promise.all([
         fetch(detailUrl),
@@ -43,7 +41,7 @@ export const fetchDetail = async (id, query, lang) => {
 
 export const fetchSearch = async (search, lang) => {
 
-    const response = await fetch(`https://api.themoviedb.org/3/search/multi?query=${search}&language=${lang}&api_key=0b243a8843cc55c9e1ba6cdeae3cf6fb`);
+    const response = await fetch(`https://api.themoviedb.org/3/search/multi?query=${search}&language=${lang}&api_key=${process.env.API_KEY}`);
     return await response.json();
 
-}
+};
